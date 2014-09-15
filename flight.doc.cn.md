@@ -131,7 +131,7 @@ Flight::route('GET|POST /', function(){
 
 ```php
 Flight::route('/user/[0-9]+', function(){
-    // This will match /user/1234
+    // 这个将匹配到 /user/1234
 });
 ```
 
@@ -149,8 +149,8 @@ Flight::route('/@name/@id', function($name, $id){
 
 ```php
 Flight::route('/@name/@id:[0-9]{3}', function($name, $id){
-    // This will match /bob/123
-    // But will not match /bob/12345
+    // 这个将匹配到 /bob/123
+    // 但是不会匹配到 /bob/12345
 });
 ```
 
@@ -160,7 +160,7 @@ Flight::route('/@name/@id:[0-9]{3}', function($name, $id){
 
 ```php
 Flight::route('/blog(/@year(/@month(/@day)))', function($year, $month, $day){
-    // This will match the following URLS:
+    // 它将匹配如下URLS:
     // /blog/2012/12/10
     // /blog/2012/12
     // /blog/2012
@@ -176,7 +176,7 @@ Flight::route('/blog(/@year(/@month(/@day)))', function($year, $month, $day){
 
 ```php
 Flight::route('/blog/*', function(){
-    // This will match /blog/2000/02/01
+    // 这个将匹配到 /blog/2000/02/01
 });
 ```
 
@@ -194,15 +194,15 @@ Flight::route('*', function(){
 
 ```php
 Flight::route('/user/@name', function($name){
-    // Check some condition
+    // 检查某些条件
     if ($name != "Bob") {
-        // Continue to next route
+        // 延续到下一个路由
         return true;
     }
 });
 
 Flight::route('/user/*', function(){
-    // This will get called
+    // 这里会被调用到
 });
 ```
 
@@ -213,13 +213,13 @@ route方法的第三个参数设置成`true`。这个路由对象总是会作为
 
 ```php
 Flight::route('/', function($route){
-    // Array of HTTP methods matched against
+    // 匹配到的HTTP方法的数组
     $route->methods;
 
-    // Array of named parameters
+    // 命名参数数组
     $route->params;
 
-    // Matching regular expression
+    // 匹配的正则表达式
     $route->regex;
 
     // Contains the contents of any '*' used in the URL pattern
@@ -237,12 +237,12 @@ Fligth被设计成一个可扩展的框架。这个框架带来了一系列的�
 你可以使用`map`函数去映射你自定义的方法：
 
 ```php
-// Map your method
+// 映射你自己的方法
 Flight::map('hello', function($name){
     echo "hello $name!";
 });
 
-// Call your custom method
+// 调用你的自定义方法
 Flight::hello('Bob');
 ```
 
@@ -251,10 +251,10 @@ Flight::hello('Bob');
 你可以使用`register`函数去注册你自己的类：
 
 ```php
-// Register your class
+// 注册你定义的类
 Flight::register('user', 'User');
 
-// Get an instance of your class
+// 得到你定义的类的一个实例
 $user = Flight::user();
 ```
 
@@ -263,11 +263,11 @@ register方法允许你向类的构造函数传递参数。所以当你加载自
 这是一个加载数据库连接的例子：
 
 ```php
-// Register class with constructor parameters
+// 注册一个带有构造函数参数的类
 Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
 
-// Get an instance of your class
-// This will create an object with the defined parameters
+// 得到你定义的类的一个实例
+// 这里将创建一个带有你定义的参数的对象
 //
 //     new PDO('mysql:host=localhost;dbname=test','user','pass');
 //
@@ -275,10 +275,10 @@ $db = Flight::db();
 ```
 
 如果你传递了额外的回调函数参数，它将会在类构造完之后立即执行。这就允许你为这个新对象去
-执行任何的安装过程(set up procedures)。这个回调函数需要一个参数，就是这个新对象的实例。
+执行任何的安装过程(set up procedures)。这个回调函数会被传递一个参数，就是这个新对象的实例。
 
 ```php
-// The callback will be passed the object that was constructed
+// 这个回调函数将会传递到这个被构造的对象中
 Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'), function($db){
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 });
@@ -288,10 +288,10 @@ Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','p
 简单的传递一个`false`参数就行了。
 
 ```php
-// Shared instance of the class
+// 类的共享实例
 $shared = Flight::db();
 
-// New instance of the class
+// 类的新实例
 $new = Flight::db(false);
 ```
 
@@ -307,7 +307,7 @@ Flight允许你按照自己的需要去重写它的默认功能，而不用修�
 
 ```php
 Flight::map('notFound', function(){
-    // Display custom 404 page
+    // 显示自定义的404页面
     include 'errors/404.html';
 });
 ```
@@ -315,10 +315,11 @@ Flight::map('notFound', function(){
 Flight也允许你替换这个框架的核心组件。例如你可以将默认的Router类替换成你自定义的类：
 
 ```php
-// Register your custom class
+// 注册成你自定义的类
 Flight::register('router', 'MyRouter');
 
 // When Flight loads the Router instance, it will load your class
+// 当Flight加载Router实例时，将会加载到你自定义的类
 $myrouter = Flight::router();
 ```
 
@@ -360,24 +361,24 @@ Flight::after('start', function(&$params, &$output){
 这里是一个过滤器处理的例子：
 
 ```php
-// Map a custom method
+// 映射一个自定义的方法
 Flight::map('hello', function($name){
     return "Hello, $name!";
 });
 
-// Add a before filter
+// 添加一个前置的过滤器
 Flight::before('hello', function(&$params, &$output){
-    // Manipulate the parameter
+    // 操作这里的params
     $params[0] = 'Fred';
 });
 
-// Add an after filter
+// 添加一个后置的过滤器
 Flight::after('hello', function(&$params, &$output){
-    // Manipulate the output
+    // 操作这里的output
     $output .= " Have a nice day!";
 });
 
-// Invoke the custom method
+// 调用这个自定义方法
 echo Flight::hello('Bob');
 ```
 
@@ -395,11 +396,11 @@ Flight::before('start', function(&$params, &$output){
 Flight::before('start', function(&$params, &$output){
     echo 'two';
 
-    // This will end the chain
+    // 如下将会终止这个过滤器链
     return false;
 });
 
-// This will not get called
+// 这里将不会得到调用
 Flight::before('start', function(&$params, &$output){
     echo 'three';
 });
@@ -412,10 +413,10 @@ Flight::before('start', function(&$params, &$output){
 Flight允许你定义变量，使得它能在应用内的任何地方被使用。
 
 ```php
-// Save your variable
+// 保存你定义的变量
 Flight::set('id', 123);
 
-// Elsewhere in your application
+// 在应用的其他地方使用
 $id = Flight::get('id');
 ```
 去检测一个变量是否被设置了可以这么做：
@@ -429,10 +430,10 @@ if (Flight::has('id')) {
 去清除一个变量你可以这么做：
 
 ```php
-// Clears the id variable
+// 清除这个id变量
 Flight::clear('id');
 
-// Clears all variables
+// 清除所有的变量
 Flight::clear();
 ```
 
@@ -547,11 +548,11 @@ Flight允许你替换默认的视图引擎，只需简单的注册你自己的�
 如何使用[Smarty](http://www.smarty.net/)模板引擎：
 
 ```php
-// Load Smarty library
+// 加载Smarty类库
 require './Smarty/libs/Smarty.class.php';
 
-// Register Smarty as the view class
-// Also pass a callback function to configure Smarty on load
+// 将Smarty注册成视图类
+// 同时传递一个回调函数，在加载过程中配置Smarty
 Flight::register('view', 'Smarty', array(), function($smarty){
     $smarty->template_dir = './templates/';
     $smarty->compile_dir = './templates_c/';
@@ -559,10 +560,10 @@ Flight::register('view', 'Smarty', array(), function($smarty){
     $smarty->cache_dir = './cache/';
 });
 
-// Assign template data
+// 模板中数据的赋值
 Flight::view()->assign('name', 'Bob');
 
-// Display the template
+// 显示这个模板
 Flight::view()->display('hello.tpl');
 ```
 
@@ -585,7 +586,7 @@ Flight::map('render', function($template, $data){
 
 ```php
 Flight::map('error', function(Exception $ex){
-    // Handle error
+    // 错误处理
     echo $ex->getTraceAsString();
 });
 ```
@@ -605,7 +606,7 @@ Flight::set('flight.log_errors', true);
 
 ```php
 Flight::map('notFound', function(){
-    // Handle not found
+    // 处理not found
 });
 ```
 
