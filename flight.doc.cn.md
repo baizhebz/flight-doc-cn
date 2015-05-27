@@ -24,6 +24,7 @@ Flight is released under the [MIT](http://flightphp.com/license) license.
 # 安装
 
 1\.框架下载
+
 如果你在使用[Composer](https://getcomposer.org/)，你可以运行如下命令：
 
 ```
@@ -787,7 +788,8 @@ Flight框架被设计成易于使用和易于理解的。下面就是这个框�
 
 ```
 Flight::map($name, $callback) // 创建一个自定的框架方法
-Flight::register($name, $class, [$params], [$callback]) // 将一个类注册成框架方法Flight::before($name, $callback) // 添加框架方法的前置过滤器
+Flight::register($name, $class, [$params], [$callback]) //将一个类注册成框架方法
+Flight::before($name, $callback) // 添加框架方法的前置过滤器
 Flight::after($name, $callback) // 添加框架方法的后置过滤器
 Flight::path($path) // 添加类自动加载(autoloading)的路径
 Flight::get($key) // 获取某个变量的值
