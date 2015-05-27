@@ -1,6 +1,6 @@
 # Flight是什么？
 
-Flight是一个快速，简单，可扩展的PHP框架。Flight能使你快速和轻松地创建RESTful Web应用。
+Flight是一个快速，简易，可扩展的PHP框架。Flight能使你快速和轻松地创建RESTful Web应用。
 
 ```php
 require 'flight/Flight.php';
@@ -12,7 +12,6 @@ Flight::route('/', function(){
 Flight::start();
 ```
 
-[Learn more](http://flightphp.com/learn)
 
 # 需求
 
@@ -24,11 +23,18 @@ Flight is released under the [MIT](http://flightphp.com/license) license.
 
 # 安装
 
-1\. [下载](https://github.com/mikecao/flight/tarball/master)之后取出Flight框架的文件，放入你的web目录中。
+1\.框架下载
+如果你在使用[Composer](https://getcomposer.org/)，你可以运行如下命令：
+
+```
+composer require mikecao/flight
+```
+
+或者你可以直接[下载](https://github.com/mikecao/flight/tarball/master)，之后将Flight框架文件放入你的web目录中。
 
 2\. 配置你的web服务器
 
-对于*Apache*服务器，如下编辑你的`.htaccess`文件：
+对于*Apache*服务器，编辑你的`.htaccess`文件添加如下内容：
 
 ```
 RewriteEngine On
@@ -46,15 +52,15 @@ server {
     }
 }
 ```
-3\. 创建你的`index.php`文件
+3\. 创建你的`index.php`文件（示例）
 
-第一步要引入这个框架。
+首先引入这个框架。
 
 ```php
 require 'flight/Flight.php';
 ```
 
-接着定义一个路由并且注册一个函数去处理这个请求。
+接着定义一个路由并且注册一个函数去处理对应请求。
 
 ```php
 Flight::route('/', function(){
@@ -70,7 +76,7 @@ Flight::start();
 
 # 路由
 
-Flight中的路由是将一个URL模式(pattern)匹配到一个回调函数中。
+Flight中的路由是指将一个URL模式(pattern)匹配到一个回调函数中。
 
 ```php
 Flight::route('/', function(){
@@ -78,7 +84,7 @@ Flight::route('/', function(){
 });
 ```
 
-回调函数可以是能被调用的任何目标。所以你可以使用一个常规的函数：
+只要能被调用，都可以当做回调函数。所以可以使用一个普通的函数当做回调：
 
 ```php
 function hello(){
@@ -88,7 +94,7 @@ function hello(){
 Flight::route('/', 'hello');
 ```
 
-或者是一个类中的方法：
+也可以是某一个类的方法：
 
 ```php
 class Greeting {
@@ -100,12 +106,11 @@ class Greeting {
 Flight::route('/', array('Greeting','hello'));
 ```
 
-路由依照定义它们的顺序进行匹配。第一个匹配到请求的路由将被调用。
+如果定义了多个路由，路由依照定义它们的顺序进行匹配。第一个匹配到该请求的路由将被调用。
 
-## (HTTP)方法路由
+## HTTP METHOD路由
 
-默认情况下，路由模式(patterns)能与所有的请求方法匹配。你能通过在URL前面加一个方法标识符
-的方式来响应指定的方法。
+在默认不指定的情况下，路由会对相应请求的所有Method(例如：GET POST PUT DELETE...)进行匹配。你可以通过在URL前面加一个方法标识符的方式来响应指定的Method。
 
 ```php
 Flight::route('GET /', function(){
@@ -117,7 +122,7 @@ Flight::route('POST /', function(){
 });
 ```
 
-你还可以使用`|`分隔符来映射多个方法到单一的回调中。
+你还可以使用`|`分隔符来映射多个Method到同一个回调中。
 
 ```php
 Flight::route('GET|POST /', function(){
@@ -635,23 +640,23 @@ $request = Flight::request();
 request对象提供了如下的属性：
 
 ```
-url - The URL being requested
+url - 被请求的url
 base - The parent subdirectory of the URL
-method - The request method (GET, POST, PUT, DELETE)
-referrer - The referrer URL
-ip - IP address of the client
-ajax - Whether the request is an AJAX request
-scheme - The server protocol (http, https)
-user_agent - Browser information
-type - The content type
-length - The content length
-query - Query string parameters
-data - Post data or JSON data
-cookies - Cookie data
-files - Uploaded files
+method - 请求的Method (GET, POST, PUT, DELETE)
+referrer - 引用（referrer）的 URL
+ip - 客户点的IP地址
+ajax - 是否是一个ajax请求
+scheme - 服务器scheme (http, https)
+user_agent - 浏览器信息
+type - Content-type
+length - Content-length
+query - 查询字符串参数（Query string parameters）
+data - Post数据或者JSON数据
+cookies - Cookies数据
+files - 上传的文件
 secure - Whether the connection is secure
 accept - HTTP accept parameters
-proxy_ip - Proxy IP address of the client
+proxy_ip - 客户端代理ip地址
 ```
 
 你可以通过数组或对象的方式来获取`query`,`data`,`cookies`和 `files`属性。
@@ -778,38 +783,36 @@ Flight::set('flight.log_errors', true);
 Flight框架被设计成易于使用和易于理解的。下面就是这个框架完整的方法集合。它由 是常规静态函数
 的核心方法，和被映射的可以被过滤和重写的扩展方法组成。
 
-## Core Methods
 ## 核心方法
 
-```php
-Flight::map($name, $callback) // Creates a custom framework method.
-Flight::register($name, $class, [$params], [$callback]) // Registers a class to a framework method.
-Flight::before($name, $callback) // Adds a filter before a framework method.
-Flight::after($name, $callback) // Adds a filter after a framework method.
-Flight::path($path) // Adds a path for autoloading classes.
-Flight::get($key) // Gets a variable.
-Flight::set($key, $value) // Sets a variable.
-Flight::has($key) // Checks if a variable is set.
-Flight::clear([$key]) // Clears a variable.
-Flight::init() // Initializes the framework to its default settings.
-Flight::app() // Gets the application object instance
+```
+Flight::map($name, $callback) // 创建一个自定的框架方法
+Flight::register($name, $class, [$params], [$callback]) // 将一个类注册成框架方法Flight::before($name, $callback) // 添加框架方法的前置过滤器
+Flight::after($name, $callback) // 添加框架方法的后置过滤器
+Flight::path($path) // 添加类自动加载(autoloading)的路径
+Flight::get($key) // 获取某个变量的值
+Flight::set($key, $value) // 设置变量的值
+Flight::has($key) // 某个变量是否被设值
+Flight::clear([$key]) // 清除一个变量
+Flight::init() // 初始化框架到默认的设定
+Flight::app() // 获取整个应用对象的实例
 ```
 
 ## 扩展方法
 
-```php
-Flight::start() // Starts the framework.
-Flight::stop() // Stops the framework and sends a response.
-Flight::halt([$code], [$message]) // Stop the framework with an optional status code and message.
-Flight::route($pattern, $callback) // Maps a URL pattern to a callback.
-Flight::redirect($url, [$code]) // Redirects to another URL.
-Flight::render($file, [$data], [$key]) // Renders a template file.
-Flight::error($exception) // Sends an HTTP 500 response.
-Flight::notFound() // Sends an HTTP 404 response.
-Flight::etag($id, [$type]) // Performs ETag HTTP caching.
-Flight::lastModified($time) // Performs last modified HTTP caching.
-Flight::json($data, [$code], [$encode]) // Sends a JSON response.
-Flight::jsonp($data, [$param], [$code], [$encode]) // Sends a JSONP response.
+```
+Flight::start() // 开启框架（接收响应开始工作）
+Flight::stop() // 框架停止并且发送返回响应
+Flight::halt([$code], [$message]) // 停止框架并返回一个可选的http状态码和信息
+Flight::route($pattern, $callback) // 将一个URL匹配到一个回调中
+Flight::redirect($url, [$code]) // 重定向到另一个URL
+Flight::render($file, [$data], [$key]) // 渲染模板文件
+Flight::error($exception) // 发送HTTP 500响应
+Flight::notFound() // 发送HTTP 404响应
+Flight::etag($id, [$type]) // 运行HTTP Etag缓存
+Flight::lastModified($time) // 运行HTTP last modified缓存
+Flight::json($data, [$code], [$encode]) // 发送JSON响应
+Flight::jsonp($data, [$param], [$code], [$encode]) // 发送JSONP响应
 ```
 
 任何通过`map`和`register`添加的自定义方法都可以被过滤。
